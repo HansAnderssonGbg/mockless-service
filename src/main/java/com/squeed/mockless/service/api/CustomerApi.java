@@ -1,10 +1,14 @@
 package com.squeed.mockless.service.api;
 
 import com.squeed.mockless.service.api.model.Customer;
+import com.squeed.mockless.service.api.model.Order;
 import com.squeed.mockless.service.db.CustomerDB;
+import com.squeed.mockless.service.externalservices.OrderService;
 import com.squeed.mockless.service.mappers.CustomerMapper;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.mapstruct.factory.Mappers;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -15,11 +19,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
 
-@Path("customers")
+@Path("/customers")
 @Produces({"application/json"})
 public class CustomerApi {
 
     CustomerMapper mapper = Mappers.getMapper(CustomerMapper.class);
+
+    @RestClient
+    OrderService orderService;
 
     @GET
     public List<Customer> getCustomers() {
@@ -31,6 +38,13 @@ public class CustomerApi {
     public Customer getCustomer(@PathParam("id") Integer id) {
         CustomerDB customer = CustomerDB.findById(id);
         return mapper.toApi(customer);
+    }
+
+    @GET
+    @Path("{id}/orders")
+    public List<Order> getOrders(@PathParam("id") Integer id) {
+
+        return orderService.getByCustomerId(id);
     }
 
     @POST
