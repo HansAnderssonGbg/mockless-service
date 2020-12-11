@@ -17,7 +17,7 @@ public class HoverflyResource  implements QuarkusTestResourceLifecycleManager {
 
     @Override
     public Map<String, String> start() {
-        //hoverfly.getHoverflyConfig().setTlsVerificationDisabled(true);
+        hoverfly.getHoverflyConfig().setTlsVerificationDisabled(true);
         hoverfly.start();
         return null;
     }
