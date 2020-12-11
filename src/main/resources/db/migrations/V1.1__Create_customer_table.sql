@@ -6,3 +6,5 @@ create table mockless.customer
     first_name     varchar,
     last_name      varchar
 );
+
+alter table mockless.customer owner to mockless_role

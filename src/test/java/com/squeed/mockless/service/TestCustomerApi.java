@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
@@ -27,26 +29,19 @@ public class TestCustomerApi {
         .then()
             .assertThat()
                 .statusCode(200)
-                .body("size()", is(1))
-                .body("[0].name", is("a"))
-                .body("[0].category", is("cat2"))
-                .body("[0].resource", is("cat2:a"))
-                .body("[0].actions", hasItem("write"));
+                .body("firstName", is("Cool"))
+                .body("lastName", is("Person"));
     }
 
     @Test
     public void filterByCategory() {
         given()
-            .queryParam("sort", "test")
         .when()
             .get("/customers")
         .then()
             .assertThat()
                 .statusCode(200)
-                .body("size()", is(1))
-                .body("[0].name", is("a"))
-                .body("[0].category", is("cat2"))
-                .body("[0].resource", is("cat2:a"))
-                .body("[0].actions", hasItem("write"));
+                .body("[0].firstName", is("Cool"))
+                .body("[0].lastName", is("Person"));
     }
 }

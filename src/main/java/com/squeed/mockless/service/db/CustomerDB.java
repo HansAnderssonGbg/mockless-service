@@ -14,11 +14,14 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "customer")
+@Table(name = "mockless.customer")
 @Getter
 @Setter
-public class CustomerDB extends PanacheEntity {
+public class CustomerDB extends PanacheEntityBase{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     @Column(name = "first_name")
     String firstName;
