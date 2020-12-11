@@ -13,10 +13,10 @@ import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
 @QuarkusTestResource(EmbeddedPostgresResource.class)
-public class TestCustomerApi {
+public class WhenCustomerIsCreated {
 
     @BeforeAll
-    static void createCustomer() {
+    static void whenCustomerIsCreated() {
         given()
             .port(8081)
             .contentType(ContentType.JSON)
@@ -31,7 +31,7 @@ public class TestCustomerApi {
     }
 
     @Test
-    public void filterByCategory() {
+    public void thenReadCustomerRetrievesIt() {
         given()
         .when()
             .get("/customers")
