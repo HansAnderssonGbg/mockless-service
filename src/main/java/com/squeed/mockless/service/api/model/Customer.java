@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class Customer {
+    Integer id;
     String firstName;
     String lastName;
 }

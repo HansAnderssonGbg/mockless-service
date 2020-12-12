@@ -73,6 +73,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.rest-assured</groupId>
@@ -95,6 +99,12 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.specto</groupId>
+      <artifactId>hoverfly-java-junit5</artifactId>
+      <version>0.12.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
