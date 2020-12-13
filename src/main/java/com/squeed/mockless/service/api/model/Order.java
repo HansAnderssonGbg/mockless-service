@@ -16,7 +16,6 @@ public class Order {
     Integer id;
     List<OrderRow> orderRows;
 
-
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
