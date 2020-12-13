@@ -31,8 +31,9 @@ public class HoverflyResource  implements QuarkusTestResourceLifecycleManager {
         hoverfly.close();
     }
 
-    public static RequestSpecification externalServices(SimulationSource simulationSources) {
-        hoverfly.simulate(simulationSources);
+    public static RequestSpecification externalServices(SimulationSource simulationSource,
+                                                        SimulationSource... simulationSources) {
+        hoverfly.simulate(simulationSource, simulationSources);
         return new RequestSpecBuilder().build();
     }
 

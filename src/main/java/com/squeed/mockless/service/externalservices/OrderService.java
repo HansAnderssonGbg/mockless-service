@@ -16,5 +16,6 @@ public interface OrderService {
 
     @GET
     @Path("{id}")
-    List<Order> getByCustomerId(@PathParam("id") Integer customerId);
+    List<Order> getByCustomerId(@PathParam("id") Long customerId);
+
 }

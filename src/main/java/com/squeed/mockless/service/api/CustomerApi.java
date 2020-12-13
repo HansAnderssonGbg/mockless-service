@@ -8,9 +8,9 @@ import com.squeed.mockless.service.mappers.CustomerMapper;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.mapstruct.factory.Mappers;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -35,15 +35,14 @@ public class CustomerApi {
 
     @GET
     @Path("{id}")
-    public Customer getCustomer(@PathParam("id") Integer id) {
+    public Customer getCustomer(@PathParam("id") Long id) {
         CustomerDB customer = CustomerDB.findById(id);
         return mapper.toApi(customer);
     }
 
     @GET
     @Path("{id}/orders")
-    public List<Order> getOrders(@PathParam("id") Integer id) {
-
+    public List<Order> getOrders(@PathParam("id") Long id) {
         return orderService.getByCustomerId(id);
     }
 
@@ -60,11 +59,18 @@ public class CustomerApi {
     @Path("{id}")
     @Consumes("application/json")
     @Transactional
-    public Customer updateCustomer(@PathParam("id") Integer id, Customer customer) {
+    public Customer updateCustomer(@PathParam("id") Long id, Customer customer) {
         CustomerDB customerDB = CustomerDB.findById(id);
         mapper.updateDB(customerDB, customer);
         customerDB.persist();
         return mapper.toApi(customerDB);
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Transactional
+    public void delete(@PathParam("id") Long id) {
+        CustomerDB.deleteById(id);
     }
 
 }

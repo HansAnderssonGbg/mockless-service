@@ -12,6 +12,8 @@ import lombok.SneakyThrows;
 import javax.ws.rs.core.HttpHeaders;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.specto.hoverfly.junit.core.SimulationSource.dsl;
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
@@ -40,13 +42,31 @@ public class OrderServiceSimulation {
 
     public class OrdersResponseHandler {
         @SneakyThrows
-        public SimulationSource successfullyReturns(Order.OrderBuilder order) {
-
+        public SimulationSource successfullyReturns(Order.OrderBuilder... orders) {
+            List<Order> builtOrders = Arrays.stream(orders).map(Order.OrderBuilder::build).collect(Collectors.toList());
             return dsl(
                 builder.willReturn(ResponseCreators.success()
                     .header(HttpHeaders.CONTENT_TYPE, ContentType.JSON.toString())
-                    .body(new ObjectMapper().writeValueAsString(Arrays.asList(order.build())))));
+                    .body(serialize(builtOrders))));
         }
 
+    }
+
+    public static Order.OrderBuilder order(int id, Order.OrderRow.OrderRowBuilder... rows) {
+        return Order.builder()
+            .id(id)
+            .orderRows(
+                Arrays.stream(rows)
+                    .map(Order.OrderRow.OrderRowBuilder::build)
+                    .collect(Collectors.toList()));
+    }
+
+    public static Order.OrderRow.OrderRowBuilder row() {
+        return Order.OrderRow.builder();
+    }
+
+    @SneakyThrows
+    private static String serialize(Object o) {
+        return new ObjectMapper().writeValueAsString(o);
     }
 }
