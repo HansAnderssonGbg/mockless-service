@@ -77,6 +77,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-kafka-client</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.rest-assured</groupId>
@@ -98,6 +102,12 @@
       <groupId>io.specto</groupId>
       <artifactId>hoverfly-java-junit5</artifactId>
       <version>0.12.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-kafka-tests</artifactId>
+      <version>3.2.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

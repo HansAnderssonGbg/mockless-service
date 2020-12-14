@@ -3,6 +3,7 @@ package com.squeed.mockless.service;
 import com.squeed.mockless.service.api.model.Customer;
 import com.squeed.mockless.service.testutils.EmbeddedPostgresResource;
 import com.squeed.mockless.service.testutils.HoverflyResource;
+import com.squeed.mockless.service.testutils.KafkaResource;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -20,10 +21,12 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(EmbeddedPostgresResource.class)
 @QuarkusTestResource(HoverflyResource.class)
+@QuarkusTestResource(KafkaResource.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class When_customer_is_created {
 
@@ -44,6 +47,11 @@ public class When_customer_is_created {
                     .body("firstName", is("Cool"))
                     .body("lastName", is("Person"))
                 .extract().body().as(Customer.class);
+    }
+
+    @Test
+    void change_event_is_sent_on_kakfa() {
+        assertEquals(customer.getId().toString(), KafkaResource.pollChanges());
     }
 
     @Test
