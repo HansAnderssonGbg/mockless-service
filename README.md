@@ -1,51 +1,56 @@
-# mockless-service project
+# mockless-service 
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+The aim for this service is to showcase a good way to write unit tests without using any mocks. 
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## Test components
+### [HoverflyResource.java](https://github.com/HansAnderssonSqueed/mockless-service/blob/main/src/test/java/com/squeed/mockless/service/testutils/HoverflyResource.java)
+Starts hoverfly
 
-## Running the application in dev mode
+### [EmbeddedPostgresResource.java](https://github.com/HansAnderssonSqueed/mockless-service/blob/main/src/test/java/com/squeed/mockless/service/testutils/EmbeddedPostgresResource.java)
+Starts postgres server
 
-You can run your application in dev mode that enables live coding using:
-```shell script
-./mvnw compile quarkus:dev
+### [OrderServiceSimulation.java](https://github.com/HansAnderssonSqueed/mockless-service/blob/main/src/test/java/com/squeed/mockless/service/testutils/OrderServiceSimulation.java)
+Configures endpoints for the order service.
+
+## Resource Usage
+By annotating a testClass with `@QuarkusTestResources` and specify the above resources
+```java
+@QuarkusTest
+@QuarkusTestResource(EmbeddedPostgresResource.class)
+@QuarkusTestResource(HoverflyResource.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+public class When_an_action_is_taken {
+    
+}
 ```
+the specified services for `PostgreSQL` and `Hoverfly` will start.
 
-## Packaging and running the application
+These resources fulfill the `QuarkusTestResourceLifecycleManager` interface which has a `start()` method.
+`start()` returns a `Map<String, String>` which will be set in the application context.
 
-The application can be packaged using:
-```shell script
-./mvnw package
+### Hoverfly dsl
+`HoverflyResource` starts hoverfly and `OrderServiceSimulation` provides a configurable interface that can be used with `RestAssured`
+Excerpt from [When_customer_is_created.java](https://github.com/HansAnderssonSqueed/mockless-service/blob/main/src/test/java/com/squeed/mockless/service/When_customer_is_created.java)
+```java
+given()
+    .spec(externalServices(
+        orderService().getOrders(customer.getId()).successfullyReturns(
+            order(1,
+                row().sku("1001-A").description("Shirt").quantity(2.0),
+                row().sku("1023-B").description("Pants").quantity(1.0)
+            ),
+            order(2)
+        )
+    ))
+    .pathParam("id", customer.getId())
+.when()
+    .get("/customers/{id}/orders")
+.then()
+    .assertThat()
+        .statusCode(200)
 ```
-It produces the `mockless-service-1.0.0-SNAPSHOT-runner.jar` file in the `/target` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/lib` directory.
+## Running the tests
 
-If you want to build an _über-jar_, execute the following command:
 ```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
+./mvnw compile test
 ```
-
-The application is now runnable using `java -jar target/mockless-service-1.0.0-SNAPSHOT-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
-./mvnw package -Pnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/mockless-service-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.html.
-
-# RESTEasy JSON serialisation using Jackson
-
-<p>This example demonstrate RESTEasy JSON serialisation by letting you list, add and remove quark types from a list.</p>
-<p><b>Quarked!</b></p>
-
-Guide: https://quarkus.io/guides/rest-json
