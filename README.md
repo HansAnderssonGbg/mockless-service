@@ -12,12 +12,16 @@ Starts postgres server
 ### [OrderServiceSimulation.java](https://github.com/HansAnderssonSqueed/mockless-service/blob/main/src/test/java/com/squeed/mockless/service/testutils/OrderServiceSimulation.java)
 Configures endpoints for the order service.
 
+### [KafkaResource.java](https://github.com/HansAnderssonSqueed/mockless-service/blob/kafka/src/test/java/com/squeed/mockless/service/testutils/KafkaResource.java)
+Starts a Kafka cluster.
+
 ## Resource Usage
 By annotating a testClass with `@QuarkusTestResources` and specify the above resources
 ```java
 @QuarkusTest
 @QuarkusTestResource(EmbeddedPostgresResource.class)
 @QuarkusTestResource(HoverflyResource.class)
+@QuarkusTestResource(KafkaResource.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class When_an_action_is_taken {
     

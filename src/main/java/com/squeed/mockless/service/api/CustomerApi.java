@@ -4,10 +4,12 @@ import com.squeed.mockless.service.api.model.Customer;
 import com.squeed.mockless.service.api.model.Order;
 import com.squeed.mockless.service.db.CustomerDB;
 import com.squeed.mockless.service.externalservices.OrderService;
+import com.squeed.mockless.service.kafka.CustomerChangeProducer;
 import com.squeed.mockless.service.mappers.CustomerMapper;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.mapstruct.factory.Mappers;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -27,6 +29,9 @@ public class CustomerApi {
 
     @RestClient
     OrderService orderService;
+
+    @Inject
+    CustomerChangeProducer changeProducer;
 
     @GET
     public List<Customer> getCustomers() {
@@ -52,6 +57,7 @@ public class CustomerApi {
     public Customer createCustomer(Customer customer) {
         CustomerDB customerDB = mapper.toDB(customer);
         customerDB.persist();
+        changeProducer.send(customerDB.getId());
         return mapper.toApi(customerDB);
     }
 
